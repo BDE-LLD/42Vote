@@ -10,6 +10,7 @@ import {
 import { Box, styled } from '@mui/system';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { Trans, useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router';
 import { ClipLoader } from 'react-spinners';
@@ -105,6 +106,7 @@ function ellipseText(text: string, maxLength: number) {
 
 function Vote({ token, onError }: VoteProps) {
 	const navigate = useNavigate();
+	const { t, i18n } = useTranslation();
 
 	const { data, status } = useQuery('voteOptions', fetchOptions);
 	const [selectedOption, setSelectedOption] = useState<VoteOption | null>(
@@ -130,9 +132,7 @@ function Vote({ token, onError }: VoteProps) {
 			}),
 		});
 		if (!res.ok) {
-			toast.error(
-				'An error occurred while voting. Please try again later',
-			);
+			toast.error(t('errorVoting'));
 			onError();
 			return;
 		}
@@ -142,17 +142,33 @@ function Vote({ token, onError }: VoteProps) {
 		} else {
 			switch (data.error) {
 				case 'INVALID_TOKEN':
-					toast.error('Your token is invalid, please log in again');
+					toast.error(t('invalidToken'));
 					break;
 				case 'ALREADY_VOTED':
-					toast.error('You have already voted');
+					toast.error(t('alreadyVoted'));
 					break;
 				default:
-					toast.error('An error occurred while voting');
+					toast.error(t('errorVoting'));
 					break;
 			}
 			onError();
 		}
+	};
+
+	const getName = (option: VoteOption | null) => {
+		if (!option) {
+			return '';
+		}
+		return i18n.language === 'fr' ? option.nameFr : option.nameEn;
+	};
+
+	const getDescription = (option: VoteOption | null) => {
+		if (!option) {
+			return '';
+		}
+		return i18n.language === 'fr'
+			? option.descriptionFr
+			: option.descriptionEn;
 	};
 
 	return (
@@ -160,27 +176,32 @@ function Vote({ token, onError }: VoteProps) {
 			<Modal open={moreModalOpen} onClose={() => setMoreModalOpen(false)}>
 				<ShowMoreModalContent>
 					<ModalCard>
-						<CardHeader title={selectedOption?.nameEn} />
+						<CardHeader title={getName(selectedOption)} />
 						<CardMedia
 							component="img"
-							alt={selectedOption?.nameEn}
+							alt={getName(selectedOption)}
 							height="140"
 							image={selectedOption?.coverUrl}
 						/>
 						<CardContent>
-							<p>{selectedOption?.descriptionEn}</p>
+							<p>{getDescription(selectedOption)}</p>
 							<ModalMultipleOptions>
 								<Button
 									color="error"
 									onClick={() => setMoreModalOpen(false)}
 								>
-									Close
+									{t('close')}
 								</Button>
 								<Button
 									color="success"
 									onClick={() => setConfirmModalOpen(true)}
 								>
-									Vote for {selectedOption?.nameEn}
+									<Trans
+										i18nKey="voteFor"
+										values={{
+											option: getName(selectedOption),
+										}}
+									/>
 								</Button>
 							</ModalMultipleOptions>
 						</CardContent>
@@ -193,22 +214,26 @@ function Vote({ token, onError }: VoteProps) {
 			>
 				<ConfirmModalContent>
 					<ModalCard>
-						<CardHeader title="Confirm vote" />
+						<CardHeader title={t('confirmVote')} />
 						<CardContent>
 							<p style={{ textAlign: 'center' }}>
-								Are you sur you want to vote for{' '}
-								<b>{selectedOption?.nameEn}</b> (this action is
-								irreversible)?
+								<Trans
+									i18nKey="confirmVoteMessage"
+									values={{
+										option: getName(selectedOption),
+									}}
+									components={{ strong: <b /> }}
+								/>
 							</p>
 							<ModalMultipleOptions>
 								<Button
 									color="error"
 									onClick={() => setConfirmModalOpen(false)}
 								>
-									Cancel
+									{t('cancel')}
 								</Button>
 								<Button color="success" onClick={handleVote}>
-									Confirm vote
+									{t('confirmVote')}
 								</Button>
 							</ModalMultipleOptions>
 						</CardContent>
@@ -216,28 +241,31 @@ function Vote({ token, onError }: VoteProps) {
 				</ConfirmModalContent>
 			</Modal>
 			<Container>
-				<h1>Options</h1>
+				<h1>42 Vote</h1>
 				<OptionsContainer>
 					{status !== 'success' ? (
-						<ClipLoader />
+						<ClipLoader color="white" />
 					) : (
 						data.map((option: VoteOption) => (
 							<OptionCard key={option.value}>
-								<CardHeader title={option.nameEn} />
+								<CardHeader title={getName(option)} />
 								<CardMedia
 									component="img"
-									alt={option.nameEn}
+									alt={getName(option)}
 									height="140"
 									image={option.coverUrl}
 								/>
 								<CardContent>
 									<p>
-										{ellipseText(option.descriptionFr, 200)}
+										{ellipseText(
+											getDescription(option),
+											200,
+										)}
 									</p>
 									<ShowMoreButton
 										onClick={() => handleShowMore(option)}
 									>
-										Show more
+										{t('showMore')}
 									</ShowMoreButton>
 								</CardContent>
 							</OptionCard>

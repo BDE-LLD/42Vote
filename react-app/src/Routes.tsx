@@ -11,10 +11,12 @@ import Login from './pages/Login';
 import Vote from './pages/Vote';
 import toast from 'react-hot-toast';
 import VoteValidated from './pages/VoteValidated';
+import { useTranslation } from 'react-i18next';
 
 function AppRoutes() {
 	const location = useLocation();
 	const navigate = useNavigate();
+	const { t } = useTranslation();
 
 	const [exchangingCode, setExchangingCode] = useState(false);
 	const [token, setToken] = useState<string | null>(null);
@@ -43,7 +45,7 @@ function AppRoutes() {
 				setToken(null);
 				setExchangingCode(false);
 				if (data.error === 'ALREADY_VOTED') {
-					toast.error('You have already voted');
+					toast.error(t('alreadyVoted'));
 				}
 				return;
 			}
@@ -51,7 +53,7 @@ function AppRoutes() {
 			setExchangingCode(false);
 			navigate('/app');
 		},
-		[navigate],
+		[navigate, t],
 	);
 
 	useEffect(() => {

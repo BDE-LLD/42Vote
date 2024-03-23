@@ -2,6 +2,7 @@ import { BACK_URL } from '@/main';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/system';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import { ClipLoader } from 'react-spinners';
 
@@ -30,6 +31,7 @@ interface LoginProps {
 }
 
 function Login({ isExchangingCode }: LoginProps) {
+	const { t } = useTranslation();
 	const { data, status } = useQuery('loginLink', fetchLoginLink);
 
 	const handleLoginClick = () => {
@@ -45,7 +47,7 @@ function Login({ isExchangingCode }: LoginProps) {
 	return (
 		<Container>
 			{isExchangingCode ? (
-				<ClipLoader />
+				<ClipLoader color="white" />
 			) : (
 				<>
 					<h1>42 Vote</h1>
@@ -54,7 +56,7 @@ function Login({ isExchangingCode }: LoginProps) {
 						size="large"
 						onClick={handleLoginClick}
 					>
-						Login with 42
+						{t('login')}
 					</LoginButton>
 				</>
 			)}

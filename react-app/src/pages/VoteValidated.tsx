@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { useTranslation } from 'react-i18next';
 
 const Container = styled('div')(() => ({
 	display: 'flex',
@@ -16,19 +17,17 @@ const Link = styled('a')(() => ({
 }));
 
 function VoteValidated() {
+	const { t } = useTranslation();
 	return (
 		<Container>
-			<h2>Thank you for voting!</h2>
+			<h2>{t('thankVoting')}</h2>
+			<p>{t('voteSubmitted')}</p>
 			<p>
-				Your vote has been successfully submitted. You can now close
-				this tab
-			</p>
-			<p>
-				You can join the{' '}
+				{t('joinDiscordFirst')}
 				<Link href="https://s.bde42.fr/discord" target="_blank">
-					BDE&apos;s Discord
-				</Link>{' '}
-				to stay updated
+					{t('discord')}
+				</Link>
+				{t('joinDiscordSecond')}
 			</p>
 		</Container>
 	);
