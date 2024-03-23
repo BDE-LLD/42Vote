@@ -22,6 +22,10 @@ const Container = styled('div')(() => ({
 	alignItems: 'center',
 	height: '100%',
 	gap: '1rem',
+	overflowY: 'scroll',
+	'@media (max-width: 550px)': {
+		gap: 0,
+	},
 }));
 
 const OptionsContainer = styled('div')(() => ({
@@ -30,10 +34,27 @@ const OptionsContainer = styled('div')(() => ({
 	justifyContent: 'center',
 	alignItems: 'center',
 	gap: '3rem',
+	'@media (max-width: 550px)': {
+		flexDirection: 'column',
+		gap: '1rem',
+	},
+	padding: '1rem',
 }));
 
 const OptionCard = styled(Card)(() => ({
 	width: '300px',
+	'@media (max-width: 710px)': {
+		width: '200px',
+	},
+	'@media (max-width: 550px)': {
+		width: '80%',
+	},
+}));
+
+const SmallCardImage = styled(CardMedia)(() => ({
+	'@media (max-width: 550px)': {
+		display: 'none',
+	},
 }));
 
 const ShowMoreButton = styled(Button)(() => ({
@@ -50,6 +71,11 @@ const ShowMoreModalContent = styled(Box)(({ theme }) => ({
 	width: '70%',
 	backgroundColor: theme.palette.background.paper,
 	border: '2px solid #000',
+	'@media (max-width: 550px)': {
+		width: '90%',
+	},
+	maxHeight: '80%',
+	overflowY: 'scroll',
 }));
 
 const ConfirmModalContent = styled(Box)(({ theme }) => ({
@@ -64,6 +90,11 @@ const ConfirmModalContent = styled(Box)(({ theme }) => ({
 	flexDirection: 'column',
 	justifyContent: 'center',
 	alignItems: 'center',
+	'@media (max-width: 550px)': {
+		width: '80%',
+	},
+	maxHeight: '80%',
+	overflowY: 'scroll',
 }));
 
 const ModalCard = styled(Card)(() => ({
@@ -249,7 +280,7 @@ function Vote({ token, onError }: VoteProps) {
 						data.map((option: VoteOption) => (
 							<OptionCard key={option.value}>
 								<CardHeader title={getName(option)} />
-								<CardMedia
+								<SmallCardImage
 									component="img"
 									alt={getName(option)}
 									height="140"

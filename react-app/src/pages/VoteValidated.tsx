@@ -8,6 +8,8 @@ const Container = styled('div')(() => ({
 	alignItems: 'center',
 	height: '100%',
 	gap: '1rem',
+	padding: '1rem',
+	textAlign: 'center',
 }));
 
 const Link = styled('a')(() => ({

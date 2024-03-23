@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
 
 const HeaderContainer = styled('header')(() => ({
+	backgroundColor: 'transparent',
 	display: 'flex',
 	justifyContent: 'flex-end',
 	padding: '1rem',
