@@ -9,6 +9,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { BACK_URL } from './main';
 import Login from './pages/Login';
 import Vote from './pages/Vote';
+import toast from 'react-hot-toast';
+import VoteValidated from './pages/VoteValidated';
 
 function AppRoutes() {
 	const location = useLocation();
@@ -16,6 +18,12 @@ function AppRoutes() {
 
 	const [exchangingCode, setExchangingCode] = useState(false);
 	const [token, setToken] = useState<string | null>(null);
+
+	const handleError = () => {
+		navigate('/login');
+		setToken(null);
+		setExchangingCode(false);
+	};
 
 	const exchangeCode = useCallback(
 		async (code: string) => {
@@ -34,6 +42,9 @@ function AppRoutes() {
 				navigate('/login');
 				setToken(null);
 				setExchangingCode(false);
+				if (data.error === 'ALREADY_VOTED') {
+					toast.error('You have already voted');
+				}
 				return;
 			}
 			setToken(data.access_token);
@@ -51,6 +62,9 @@ function AppRoutes() {
 			}
 			navigate('/login');
 		}
+		if (location.pathname === '/validated') {
+			setToken(null);
+		}
 	}, [location, exchangeCode, navigate]);
 
 	return (
@@ -59,7 +73,7 @@ function AppRoutes() {
 				path="/app"
 				element={
 					token != null ? (
-						<Vote token={token} />
+						<Vote token={token} onError={handleError} />
 					) : (
 						<Navigate to="/login" />
 					)
@@ -75,6 +89,7 @@ function AppRoutes() {
 					)
 				}
 			/>
+			<Route path="/validated" element={<VoteValidated />} />
 			<Route path="*" element={<Navigate replace to="/app" />} />
 		</Routes>
 	);

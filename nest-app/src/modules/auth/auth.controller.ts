@@ -7,12 +7,14 @@ import {
 } from '@nestjs/common';
 import { Api42Service } from './api42.service';
 import { AuthService } from './auth.service';
+import { VoteService } from '../vote/vote.service';
 
 @Controller('auth')
 export class AuthController {
 	constructor(
 		private readonly api42Service: Api42Service,
 		private readonly authService: AuthService,
+		private readonly voteService: VoteService,
 	) {
 		this.api42Service.get_auth_process();
 	}
@@ -36,6 +38,9 @@ export class AuthController {
 			);
 		if (!user) {
 			throw new BadRequestException('No user found on 42 intranet');
+		}
+		if (await this.voteService.hasAlreadyVoted(user.login)) {
+			return { error: 'ALREADY_VOTED' };
 		}
 		return this.authService.generateToken(user);
 	}

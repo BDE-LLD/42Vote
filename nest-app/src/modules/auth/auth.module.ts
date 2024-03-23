@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PrismaModule } from '../prisma/prisma.module';
 import { Api42Service } from './api42.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { VoteModule } from '../vote/vote.module';
 
 @Module({
 	imports: [
@@ -12,6 +13,7 @@ import { AuthService } from './auth.service';
 			signOptions: { expiresIn: '600s' },
 		}),
 		PrismaModule,
+		forwardRef(() => VoteModule),
 	],
 	controllers: [AuthController],
 	providers: [Api42Service, AuthService],

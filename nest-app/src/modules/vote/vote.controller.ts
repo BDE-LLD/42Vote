@@ -29,7 +29,10 @@ export class VoteController {
 		}
 		const voter = this.authService.verifyAccessToken(body.access_token);
 		if (!voter) {
-			throw new BadRequestException('Invalid access token');
+			return { error: 'INVALID_TOKEN' };
+		}
+		if (await this.voteService.hasAlreadyVoted(voter)) {
+			return { error: 'ALREADY_VOTED' };
 		}
 		return await this.voteService.voteForOption(vote, voter);
 	}

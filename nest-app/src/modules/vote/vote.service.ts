@@ -27,4 +27,13 @@ export class VoteService {
 		});
 		return { success: true };
 	}
+
+	async hasAlreadyVoted(voter: string) {
+		const vote = await this.prismaService.vote.findFirst({
+			where: {
+				login: voter,
+			},
+		});
+		return !!vote;
+	}
 }

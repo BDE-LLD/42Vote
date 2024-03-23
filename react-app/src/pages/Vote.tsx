@@ -11,6 +11,7 @@ import { Box, styled } from '@mui/system';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useQuery } from 'react-query';
+import { useNavigate } from 'react-router';
 import { ClipLoader } from 'react-spinners';
 
 const Container = styled('div')(() => ({
@@ -92,6 +93,7 @@ interface VoteOption {
 
 interface VoteProps {
 	token: string;
+	onError: () => void;
 }
 
 function ellipseText(text: string, maxLength: number) {
@@ -101,7 +103,9 @@ function ellipseText(text: string, maxLength: number) {
 	return text.slice(0, maxLength - 3) + '...';
 }
 
-function Vote({ token }: VoteProps) {
+function Vote({ token, onError }: VoteProps) {
+	const navigate = useNavigate();
+
 	const { data, status } = useQuery('voteOptions', fetchOptions);
 	const [selectedOption, setSelectedOption] = useState<VoteOption | null>(
 		null,
@@ -126,14 +130,28 @@ function Vote({ token }: VoteProps) {
 			}),
 		});
 		if (!res.ok) {
-			toast.error('An error occurred while voting');
+			toast.error(
+				'An error occurred while voting. Please try again later',
+			);
+			onError();
 			return;
 		}
 		const data = await res.json();
 		if (data.success) {
-			setConfirmModalOpen(false);
-			setMoreModalOpen(false);
-			toast.success('Your vote has been registered');
+			navigate('/validated');
+		} else {
+			switch (data.error) {
+				case 'INVALID_TOKEN':
+					toast.error('Your token is invalid, please log in again');
+					break;
+				case 'ALREADY_VOTED':
+					toast.error('You have already voted');
+					break;
+				default:
+					toast.error('An error occurred while voting');
+					break;
+			}
+			onError();
 		}
 	};
 
@@ -175,7 +193,7 @@ function Vote({ token }: VoteProps) {
 			>
 				<ConfirmModalContent>
 					<ModalCard>
-						<CardHeader title={selectedOption?.nameEn} />
+						<CardHeader title="Confirm vote" />
 						<CardContent>
 							<p style={{ textAlign: 'center' }}>
 								Are you sur you want to vote for{' '}
