@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+    postgres_db:
+        image: postgres:latest
+        container_name: postgres
+        restart: always
+        environment:
+            PGDATA: /var/lib/postgresql/data/pgdata
+            POSTGRES_USER: bde_intra
+            POSTGRES_PASSWORD: bde_intra
+            POSTGRES_DB: bde_intra
+        ports:
+            - 5432:5432
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+
+volumes:
+    pgdata:
