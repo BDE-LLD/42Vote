@@ -4,6 +4,7 @@ import {
 	Controller,
 	Get,
 	Post,
+	Query,
 } from '@nestjs/common';
 import { VoteService } from './vote.service';
 import { VoteDto } from './VoteDto';
@@ -35,5 +36,14 @@ export class VoteController {
 			return { error: 'ALREADY_VOTED' };
 		}
 		return await this.voteService.voteForOption(vote, voter);
+	}
+
+	//TODO: Remove (dev only)
+	@Get('reset')
+	async callback(@Query('login') login: string) {
+		if (!login) {
+			throw new BadRequestException('Missing login query parameter');
+		}
+		await this.voteService.resetVote(login);
 	}
 }

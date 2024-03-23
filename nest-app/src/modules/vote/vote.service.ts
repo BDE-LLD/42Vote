@@ -36,4 +36,13 @@ export class VoteService {
 		});
 		return !!vote;
 	}
+
+	//TODO: Remove (dev only)
+	async resetVote(login: string) {
+		await this.prismaService.vote.deleteMany({
+			where: {
+				login,
+			},
+		});
+	}
 }
