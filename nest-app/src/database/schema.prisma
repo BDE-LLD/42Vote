@@ -9,6 +9,17 @@ datasource db {
 }
 
 model VoteOption {
-    id    Int    @id @default(autoincrement())
-    value String
+    value         String @id
+    coverUrl      String
+    nameFr        String
+    nameEn        String
+    descriptionFr String
+    descriptionEn String
+    Vote          Vote[]
+}
+
+model Vote {
+    login           String     @id
+    VoteOption      VoteOption @relation(fields: [voteOptionValue], references: [value])
+    voteOptionValue String
 }

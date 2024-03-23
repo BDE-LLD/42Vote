@@ -19,7 +19,7 @@ export class AuthService {
 		};
 	}
 
-	async verifyAccessToken(token: string): Promise<string> {
+	verifyAccessToken(token: string): string {
 		try {
 			const decoded = this.jwtService.verify(token);
 			if (
