@@ -51,12 +51,6 @@ const OptionCard = styled(Card)(() => ({
 	},
 }));
 
-const SmallCardImage = styled(CardMedia)(() => ({
-	'@media (max-width: 550px)': {
-		display: 'none',
-	},
-}));
-
 const ShowMoreButton = styled(Button)(() => ({
 	fontSize: '0.7rem',
 	left: '50%',
@@ -280,12 +274,6 @@ function Vote({ token, onError }: VoteProps) {
 						data.map((option: VoteOption) => (
 							<OptionCard key={option.value}>
 								<CardHeader title={getName(option)} />
-								<SmallCardImage
-									component="img"
-									alt={getName(option)}
-									height="140"
-									image={option.coverUrl}
-								/>
 								<CardContent>
 									<p>
 										{ellipseText(
