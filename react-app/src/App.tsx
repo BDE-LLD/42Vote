@@ -1,13 +1,17 @@
-import Login from './login/Login';
 import { styled } from '@mui/system';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { Toaster } from 'react-hot-toast';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import AppRouter from './Router';
 
 const darkTheme = createTheme({
 	palette: {
 		mode: 'dark',
 	},
 });
+
+const queryClient = new QueryClient();
 
 const Backdrop = styled('div')(() => ({
 	backgroundColor: 'rgb(16, 20, 24)',
@@ -23,10 +27,13 @@ const Backdrop = styled('div')(() => ({
 function App() {
 	return (
 		<ThemeProvider theme={darkTheme}>
-			<CssBaseline />
-			<Backdrop>
-				<Login />
-			</Backdrop>
+			<QueryClientProvider client={queryClient}>
+				<CssBaseline />
+				<Toaster position="top-center" reverseOrder={false} />
+				<Backdrop>
+					<AppRouter />
+				</Backdrop>
+			</QueryClientProvider>
 		</ThemeProvider>
 	);
 }
