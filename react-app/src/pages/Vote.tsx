@@ -20,7 +20,8 @@ const Container = styled('div')(() => ({
 	flexDirection: 'column',
 	justifyContent: 'center',
 	alignItems: 'center',
-	height: '100%',
+	minHeight: '100%',
+	height: 'fit-content',
 	gap: '1rem',
 	overflowY: 'scroll',
 	'@media (max-width: 550px)': {
@@ -36,7 +37,7 @@ const OptionsContainer = styled('div')(() => ({
 	gap: '3rem',
 	'@media (max-width: 550px)': {
 		flexDirection: 'column',
-		gap: '1rem',
+		gap: '0.5rem',
 	},
 	padding: '1rem',
 }));
@@ -63,6 +64,7 @@ const ShowMoreModalContent = styled(Box)(({ theme }) => ({
 	left: '50%',
 	transform: 'translate(-50%, -50%)',
 	width: '70%',
+	maxWidth: '500px',
 	backgroundColor: theme.palette.background.paper,
 	border: '2px solid #000',
 	'@media (max-width: 550px)': {
@@ -115,18 +117,13 @@ interface VoteOption {
 	nameEn: string;
 	descriptionFr: string;
 	descriptionEn: string;
+	shortDescFr: string;
+	shortDescEn: string;
 }
 
 interface VoteProps {
 	token: string;
 	onError: () => void;
-}
-
-function ellipseText(text: string, maxLength: number) {
-	if (text.length <= maxLength) {
-		return text;
-	}
-	return text.slice(0, maxLength - 3) + '...';
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -206,6 +203,15 @@ function Vote({ token, onError }: VoteProps) {
 			: option.descriptionEn;
 	};
 
+	const getShortDescription = (option: VoteOption | null) => {
+		if (!option) {
+			return '';
+		}
+		return i18n.language === 'fr'
+			? option.shortDescFr
+			: option.shortDescEn;
+	}
+
 	return (
 		<>
 			<Modal open={moreModalOpen} onClose={() => setMoreModalOpen(false)}>
@@ -219,7 +225,8 @@ function Vote({ token, onError }: VoteProps) {
 							image={selectedOption?.coverUrl}
 						/>
 						<CardContent>
-							<p>{getDescription(selectedOption)}</p>
+							{/* eslint-disable-next-line react/no-danger */}
+							<p dangerouslySetInnerHTML={{__html: getDescription(selectedOption)}} />
 							<ModalMultipleOptions>
 								<Button
 									color="error"
@@ -291,12 +298,8 @@ function Vote({ token, onError }: VoteProps) {
 									image={option.coverUrl}
 								/>
 								<CardContent>
-									<p>
-										{ellipseText(
-											getDescription(option),
-											200,
-										)}
-									</p>
+									{/* eslint-disable-next-line react/no-danger */}
+									<p dangerouslySetInnerHTML={{__html: getShortDescription(option)}} />
 									<ShowMoreButton
 										onClick={() => handleShowMore(option)}
 									>

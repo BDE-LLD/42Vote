@@ -78,9 +78,11 @@ const Backdrop = styled('div')(() => ({
 	position: 'fixed',
 	width: '100%',
 	height: '100%',
+	overflow: 'auto',
 }));
 
 const Content = styled('div')(() => ({
+	transform: 'translateY(-1rem)',
 	height: `calc(100% - ${HEADER_SIZE}px)`,
 }));
 
