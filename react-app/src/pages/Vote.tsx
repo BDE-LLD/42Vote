@@ -129,6 +129,16 @@ function ellipseText(text: string, maxLength: number) {
 	return text.slice(0, maxLength - 3) + '...';
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function shuffleArray(array: any[]) {
+	const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+	return shuffled;
+}
+
 function Vote({ token, onError }: VoteProps) {
 	const navigate = useNavigate();
 	const { t, i18n } = useTranslation();
@@ -271,9 +281,15 @@ function Vote({ token, onError }: VoteProps) {
 					{status !== 'success' ? (
 						<ClipLoader color="white" />
 					) : (
-						data.map((option: VoteOption) => (
+						shuffleArray(data).map((option: VoteOption) => (
 							<OptionCard key={option.value}>
 								<CardHeader title={getName(option)} />
+								<CardMedia
+									component="img"
+									alt={getName(option)}
+									height="140"
+									image={option.coverUrl}
+								/>
 								<CardContent>
 									<p>
 										{ellipseText(
